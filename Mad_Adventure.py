@@ -10,34 +10,20 @@ class Room(object):
 		self.objects = None
 		self.traps = None
 		self.actions = None
-class Combat(object, monster, player):
+class Combat(object):
 	def __init__(self):
 		self.player_health = None
 		self.player_AC = None
 		self.Monster_health = None
 		self.Monster_AC = None
-	def initiative(self):
-		monster.initiative = monster_check(monster.dex)
-		player.initiative = skill_check('Dexterity',player.stats, player.proficiency)
+		self.Monsters = None
+	def order(self):
+		for monster in Monsters:
+			monster.initiative = monster_check('Dexterity')
+		player.initiative = skill_check('Dexterity',char.stats, char.proficiency)
 		
-	def hit(self,attack,defense):
-		if attack >= defense:
-			value = 1
-		else:
-			value = 0
-		return(value)
-	def dmg(self,dice,value):
-		if value == 1:
-			dmg = random.randint(1,dice)
-		else:
-			dmg = 0
-		return(dmg)
-	def round_result(self, dmg, health, thing):
-		new_health = health-dmg 
-		if new_health <= 0:
-			thing.state = 'dead'
-		else:
-			thing.health = new_health
+			
+			
 class Monster(object):
 	def __init__(self):
 		self.AC = None
@@ -47,7 +33,7 @@ class Monster(object):
 		self.dmg_1 = None
 		self.dmg_2 = None
 		self.state = None
-		self.dex = None
+		self.m_stats = None
 		self.initiative = None
 		
 class Player(object):
@@ -226,8 +212,8 @@ def skill_check(stat, stats, proficiency):
 	x = twenty.Roll()
 	check = x + mod + proficiency
 	return(int(check))
-def monster_check(m_stat):
-	mod = ((m_stats[stat]-10)/2)//1
+def monster_check(stat,monster):
+	mod = ((monster.m_stats[stat]-10)/2)//1
 	x = twenty.Roll()
 	check = x + mod 
 	return(int(check))
