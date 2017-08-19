@@ -18,12 +18,19 @@ class Combat(object):
 		self.Monster_AC = None
 		self.Monsters = None
 	def order(self):
+		i = {}
 		for monster in Monsters:
 			monster.initiative = monster_check('Dexterity')
+			i[monster.name] = monster.initiative
 		player.initiative = skill_check('Dexterity',char.stats, char.proficiency)
-		
-			
-			
+		i[char.name] = player.initiative
+# before this comment need to write a piece of code to find the combat order from the dictionary and sort it into a two dimensional array 
+	def player_attack(self):
+#here we need to set up a system for clicking on the monster they wish to attack or at least have a sequence of buttons
+#we want to check the conditions of the fight, so how much range the weapon has, which monsters are within range, all that jazz
+#movement should be set up a bit like a chess board 
+	def monster_attack(self):
+# here is mainly just calling info from turn order, then having each monster ai choose what it wants to do 
 class Monster(object):
 	def __init__(self):
 		self.AC = None
@@ -64,6 +71,7 @@ class Player(object):
 	def Alive(self):
 		if self.state == 'dead':
 			print('You Are Dead')
+#Below are the dice objects used to generate random numbers!! You can make as many as you want!!
 class d20(object):
 	def __init__(self):
 		self.roll = 0
@@ -133,9 +141,11 @@ class d100(object):
 		return(self.roll)
 Stat_Names = ['Strength', 'Constitution', 'Dexterity', 'Intellegence', 'Wisdom', 'Charisma']		
 def Stat_Roller(): 
+#stat roller function for character creation 
 	stat = random.randint(1,6) + random.randint(1,6) + random.randint(1,6)
 	return(stat)
 def Stat_Assignment():
+# stat assignment function for character creation 
 	Abillity_Score = {'Strength': 1, 'Constitution': 1, 'Dexterity': 1, 'Intellegence': 1, 'Wisdom': 1, 'Charisma': 1}
 	stats = []
 	for i in range(0,6):
@@ -158,6 +168,7 @@ def Stat_Assignment():
 				print('Please try again your unassigned values are '+str(stats)+' ! ')		
 	return(Abillity_Score)
 def player_class():
+# function to determine the class a player wants to play
 	player_class = ''
 	playable = ['Barbarian','Bard','Cleric','Druid','Fighter','Monk','Paladin','Ranger','Rogue','Sorcerer','Warlock','Wizard']
 	j = 1
@@ -174,6 +185,7 @@ def player_class():
 			print('Your input is invalid, please try again!')
 	return(player_class)
 def hitdice(player_class):
+#hit dice values for each class 
 	hitdice = ''
 	d12 = ['Barbarian']
 	d10 = ['Cleric','Fighter','Paladin']
@@ -190,6 +202,7 @@ def hitdice(player_class):
 			k += 1
 	return(hitdice)
 def health(level,stats,hitdice):
+# basic health calculation 
 	mod = ((stats['Constitution']-10)/2)//1
 	jank = hitdice.split()
 	value = int(jank[1])
@@ -207,12 +220,14 @@ ten = d10()
 eight = d8()
 six = d6()
 four = d4()
-def skill_check(stat, stats, proficiency):
+def skill_check(stat, stats, proficiency,bonus):
+#player skill checks 
 	mod = ((stats[stat]-10)/2)//1
 	x = twenty.Roll()
-	check = x + mod + proficiency
+	check = x + mod + proficiency + bonus
 	return(int(check))
 def monster_check(stat,monster):
+#monster skill checks
 	mod = ((monster.m_stats[stat]-10)/2)//1
 	x = twenty.Roll()
 	check = x + mod 
@@ -233,12 +248,12 @@ char.state = 'alive'
 print('Well done '+char.name+' now there are only a few more questions you must answer!')
 
 clearing = Room()
-clearing.initial_text = 'Its been seven days since you set out from your small town to make for the city of Whitewater. Last night you decided to camp offthe road. It is early morning now, roll perception!'
+clearing.initial_text = 'Its been seven days since you set out from your small town to make for the city of Whitewater. Last night you decided to camp off the road. It is early morning now, roll perception!'
 clearing.mchecks = {'Perception' : 15}
 clearing.monsters = {'Goblin': 1}
 clearing.actions = ['Roll Perception','']
 
-#here I want to have a function that determins monster modifiers
+#here I want to have a function that creates monsters 
 
 clearing.mchecks['Perception'] = twenty.Roll()+20
 j = 1
