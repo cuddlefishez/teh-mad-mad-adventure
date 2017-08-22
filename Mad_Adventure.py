@@ -1,5 +1,6 @@
 import random
 import string
+# the class below is the room code ment for creating rooms in dungeons and open world for the player to interact 
 class Room(object):
 	def __init__(self):
 		self.initial_text = None
@@ -10,6 +11,7 @@ class Room(object):
 		self.objects = None
 		self.traps = None
 		self.actions = None
+# this class creates combat instances, not sure if I still want it to be this way
 class Combat(object):
 	def __init__(self):
 		self.player_health = None
@@ -42,7 +44,7 @@ class Monster(object):
 		self.state = None
 		self.m_stats = None
 		self.initiative = None
-		
+# this is the player class which holds and keeps the player statea		
 class Player(object):
 	def __init__(self):
 		self.name = None
