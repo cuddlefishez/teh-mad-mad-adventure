@@ -1,8 +1,8 @@
 def editflag(x,y,flags):
     """
-     This funcation takes 3 parameters (x,y,flags). x being the value you whish to edit.
+     This funcation takes 3 parameters (x,y,flags). x being the value you wish to edit.
      y determines whether x is appended or removed (0 to remove, 1 to append).
-     Finally flags is the list containing alll active flags
+     Finally flags is the list containing all active flags
     """
     count = flags.count(x)
     if y == 0 and count > 0:
