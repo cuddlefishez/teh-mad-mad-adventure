@@ -1,6 +1,6 @@
 import random
 import string
-# the class below is the room code ment for creating rooms in dungeons and open world for the player to interact 
+# the class below is the room code meant for creating rooms in dungeons and open world for the player to interact 
 class Room(object):
 	def __init__(self):
 		self.initial_text = None
@@ -11,7 +11,7 @@ class Room(object):
 		self.objects = None
 		self.traps = None
 		self.actions = None
-# this class creates combat instances, not sure if I still want it to be this way
+# this class creates combat instances, not sure if I still want it to be this way, however it may be the best way to add story combats 
 class Combat(object):
 	def __init__(self):
 		self.player_health = None
@@ -44,7 +44,7 @@ class Monster(object):
 		self.state = None
 		self.m_stats = None
 		self.initiative = None
-# this is the player class which holds and keeps the player statea		
+# this is the player class which holds and keeps the player state	
 class Player(object):
 	def __init__(self):
 		self.name = None
@@ -255,7 +255,8 @@ clearing.mchecks = {'Perception' : 15}
 clearing.monsters = {'Goblin': 1}
 clearing.actions = ['Roll Perception','']
 
-#here I want to have a function that creates monsters 
+#here I want to have a function that creates monsters, like pulls stats from the book and does a bit of random health rolling
+#RELATED NOTE!! IN ANOTHER FILE WE SHOULD MAKE A WEAPON ASSIGNMENT FUNCTION FOR MONSTERS!! 
 
 clearing.mchecks['Perception'] = twenty.Roll()+20
 j = 1
