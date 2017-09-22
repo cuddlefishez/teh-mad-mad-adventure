@@ -15,9 +15,8 @@ class Room(object):
 The array below will hold the different pointers for the encounter tables currently only one entry
 someone will have to create tables for encounters so we have custom ones for every area
 """
-table_dict = {1:'plains'}
-keyed_dict = {1: [[[1,50],['Goblin']],[[51,99],['Hobgoblin']],[[100],['Elder Black Dragon']]]}
-monsters
+table_dict = {'plains':3}
+keyed_dict = {3: [{ 1:'Goblin'},{2:'Hobgoblin'},{3:'ElderBlackDragon'}]}
 """
 The following list is a classification of weapontypes it is a multidimensional array
 first the weapon classification as simple, simple ranged, martial or martial ranged acts as a pointer
@@ -50,13 +49,17 @@ class Monster(object):
 	def __init__(self):
 		self.AC = None
 		self.health = None
-		self.attack_1 = None
-		self.attack_2 = None
-		self.dmg_1 = None
-		self.dmg_2 = None
 		self.state = None
-		self.m_stats = None
-		self.initiative = None
+		self.proficiency = None
+		self.weapon = None
+		self.CR = None
+		self.str = None
+		self.dex = None
+		self.con = None
+		self.int = None
+		self.wis = None
+		self.cha = None
+	
 # this is the player class which holds and keeps the player state	
 class Player(object):
 	def __init__(self):
@@ -156,16 +159,17 @@ class d100(object):
 		return(self.roll)
 Stat_Names = ['Strength', 'Constitution', 'Dexterity', 'Intellegence', 'Wisdom', 'Charisma']	
 def weapon_assignment(Weapons,choice):
+	# Weapons is list
+	# Choice is string list to expand choice of weapon based on type shown below in access_lv
 	access_lv = {'simple':0, 'simple_r':1,'martial':2,'martial_r':3}
 	a = []
 	weap = []
 	for choice in choice:
 		a.append(access_lv[choice])
 	for a in a:
-		weap.append(Weapons[a][random.randint(0,len(Weapons[a]))][0])
+		weap.append(Weapons[a][random.randint(0,len(Weapons[a])-1)][0])
 	weapon = weap[random.randint(0,len(weap)-1)]
 	return(weapon)
-def monster_table():
 def Stat_Roller(): 
 #stat roller function for character creation 
 	stat = random.randint(1,6) + random.randint(1,6) + random.randint(1,6)
@@ -237,8 +241,25 @@ def health(level,stats,hitdice):
 	else:
 		health = health + random.randint(1,value)+ mod
 	return(int(health))
+def encounter(place):
+	#place is a string based on room later will add difficulty setting
+	list = keyed_dict[table_dict[place]]
+	roll = hundred.Roll()
+	if roll <= 50:
+		key = 1
+	elif roll > 50 and roll != 100:
+		key = 2
+	else: 
+		key =3
+	monster = list[key-1][key]
+	return(str(monster))
+"""
+The next dictionary is a doozy, it will contain all of the monsters and all of thestats
+so for stats order is str, dex, con, int, wis, cha, health, CR, AC , proficiency,weapon
+"""	
+monster_dict = {'Goblin':[8,14,10,10,8,8,7,0.25,15,2,1],'Hobgoblin':[13,12,12,10,10,9,11,.5,18,2,1],'ElderBlackDragon':[27,14,25,16,15,19,21,22,7,0]}
 
-	
+
 hundred = d100()
 twenty = d20()
 twelve = d12()
@@ -266,6 +287,7 @@ char.player_class = player_class()
 char.hitdice = hitdice(char.player_class)
 char.stats = Stat_Assignment()
 char.weapon = ['Fist',weapon_assignment(Weapons,['simple'])]
+print(char.weapon[1])
 char.inventory = ['Rations5','Bedroll','Firestarter']
 char.health = health(char.level, char.stats, char.hitdice)
 char.armour = 10 + ((char.stats['Dexterity']-10)/2)//1
@@ -276,7 +298,8 @@ print('Well done '+char.name+' now there are only a few more questions you must 
 clearing = Room()
 clearing.initial_text = 'Its been seven days since you set out from your small town to make for the city of Whitewater. Last night you decided to camp off the road. It is early morning now, roll perception!'
 clearing.mchecks = {'Perception' : 15}
-clearing.monsters = {'Goblin': 1}
+clearing.monsters = encounter('plains')
+print(clearing.monsters)
 clearing.actions = ['Roll Perception','']
 
 #here I want to have a function that creates monsters, like pulls stats from the book and does a bit of random health rolling
@@ -298,8 +321,8 @@ while j == 1:
 		print('That is not a valid action, you may '+str(clearing.actions)+' ...')
 clearing1 = Room()
 if link == 1:
-	clearing1.initial_text = 'Your eyes open to a slight shuffling behind you, turning around you notice that a goblin has infiltrated your campsite!'
-	clearing1.monsters = {'Goblin': 1}
+	clearing1.initial_text = 'Your eyes open to a slight shuffling behind you, turning around you notice that a'+str(clearing.monsters)+'has infiltrated your campsite!'
+	clearing1.monsters = clearing.monsters
 	clearing1.actions = ['Attack']
 	print(clearing1.initial_text)
 	print(str(clearing1.actions))
@@ -313,15 +336,13 @@ elif link == 2:
 		link = 'a1'
 		print(clearing1.initial_text)
 	else: 
-		clearing1.initial_text = 'You hear a shout and open your eyes to a sword coming down toward you'
+		clearing1.initial_text = 'You hear a shout and open your eyes to a '+str(weapon_assignment(Weapons,['simple'])).lower()+' coming down toward you'
 		link = 'a2'
 if link == 'a2':
-	goblin = Monster()
-	goblin.AC = 10
-	goblin.health = 9
-	goblin.attack = 1
-	goblin.state = 'alive'
+	monster_info = monster_dict[clearing.monsters]
+	clearing.monsters = Monster()
+	clearing.monsters.AC = monster_info[8]
+	clearing.monsters.health = monster_info[6]
+	clearing.monsters.state = 'alive'
 	print(clearing1.initial_text)
 
-x = weapon_assignment(Weapons,['simple'])
-input(x)
