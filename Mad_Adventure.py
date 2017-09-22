@@ -11,6 +11,21 @@ class Room(object):
 		self.objects = None
 		self.traps = None
 		self.actions = None
+"""
+The array below will hold the different pointers for the encounter tables currently only one entry
+someone will have to create tables for encounters so we have custom ones for every area
+"""
+table_dict = {1:'plains'}
+keyed_dict = {1: [[[1,50],['Goblin']],[[51,99],['Hobgoblin']],[[100],['Elder Black Dragon']]]}
+monsters
+"""
+The following list is a classification of weapontypes it is a multidimensional array
+first the weapon classification as simple, simple ranged, martial or martial ranged acts as a pointer
+then the weapon name points to ward the particular properties of that weapon as follows, cost, damage dice, damage type 
+(b for blugeoning, s for slashing, p for piercing), weight in lbs., any other specific properties 
+note: in specific properties thrown1 is an indication of range (20,60) ft thrown2 is indication of (30,120) ft
+"""
+Weapons = [['simple',['Club',[[1,'sp'],[1,'d4'],'b',2,['light']]],['Dagger',[[2,'gp'],[1,'d4'],'p',1,['finesse','light','thrown1']]],['Greatclub',[[2,'sp'],[1,'d8'],'b',10,['two-handed']]],['Handaxe',[[5,'gp'],[1,'d6'],'s',2,['light','thrown1']]],['Javalin',[[5,'sp'],[1,'d6'],'p',2,['thrown2']]],['LightHammer',[[2,'gp'],[1,'d4'],'b',2,['light','thrown1']]],['Mace',[[5,'gp'],[1,'d6'],'b',4,['Light']]],['Quaterstaff',[[2,'sp'],[1,'d6'],'b',4,['versatile']]],['Sickle',[[1,'gp'],[1,'d4'],'s',2,['light']]],['Spear',[[1,'gp'],[1,'d6'],'p',3,['thrown1','versatile']]],['Fist',[[0,''],1,'b','','']]],['simple_r'],['martial'],['martial_r']]
 # this class creates combat instances, not sure if I still want it to be this way, however it may be the best way to add story combats 
 class Combat(object):
 	def __init__(self):
@@ -27,11 +42,9 @@ class Combat(object):
 		player.initiative = skill_check('Dexterity',char.stats, char.proficiency)
 		i[char.name] = player.initiative
 # before this comment need to write a piece of code to find the combat order from the dictionary and sort it into a two dimensional array 
-	def player_attack(self):
 #here we need to set up a system for clicking on the monster they wish to attack or at least have a sequence of buttons
 #we want to check the conditions of the fight, so how much range the weapon has, which monsters are within range, all that jazz
-#movement should be set up a bit like a chess board 
-	def monster_attack(self):
+#movement should be set up a bit like a chess board	
 # here is mainly just calling info from turn order, then having each monster ai choose what it wants to do 
 class Monster(object):
 	def __init__(self):
@@ -141,7 +154,18 @@ class d100(object):
 	def Roll(self):
 		self.roll = random.randint(1,100)	
 		return(self.roll)
-Stat_Names = ['Strength', 'Constitution', 'Dexterity', 'Intellegence', 'Wisdom', 'Charisma']		
+Stat_Names = ['Strength', 'Constitution', 'Dexterity', 'Intellegence', 'Wisdom', 'Charisma']	
+def weapon_assignment(Weapons,choice):
+	access_lv = {'simple':0, 'simple_r':1,'martial':2,'martial_r':3}
+	a = []
+	weap = []
+	for choice in choice:
+		a.append(access_lv[choice])
+	for a in a:
+		weap.append(Weapons[a][random.randint(0,len(Weapons[a]))][0])
+	weapon = weap[random.randint(0,len(weap)-1)]
+	return(weapon)
+def monster_table():
 def Stat_Roller(): 
 #stat roller function for character creation 
 	stat = random.randint(1,6) + random.randint(1,6) + random.randint(1,6)
@@ -241,7 +265,7 @@ char.level = 1
 char.player_class = player_class()
 char.hitdice = hitdice(char.player_class)
 char.stats = Stat_Assignment()
-char.weapon = ['Fist','Short Sword']
+char.weapon = ['Fist',weapon_assignment(Weapons,['simple'])]
 char.inventory = ['Rations5','Bedroll','Firestarter']
 char.health = health(char.level, char.stats, char.hitdice)
 char.armour = 10 + ((char.stats['Dexterity']-10)/2)//1
@@ -263,7 +287,7 @@ j = 1
 while j == 1:
 	action_input = input(clearing.initial_text)
 	if string.capwords(action_input) in clearing.actions:
-		x = skill_check('Wisdom',char.stats)
+		x = skill_check('Wisdom',char.stats,0,0)
 		if x >> clearing.mchecks['Perception']:
 			link = 1
 			j = -1
@@ -299,4 +323,5 @@ if link == 'a2':
 	goblin.state = 'alive'
 	print(clearing1.initial_text)
 
-
+x = weapon_assignment(Weapons,['simple'])
+input(x)
