@@ -99,7 +99,7 @@ class Monster(object):
 			c = 1
 			print("A dangerous strike!")
 		mod = ((self.str-10)/2)//1
-		x = roll + mod 
+		x = roll + mod + self.proficiency
 		return(int(x),c)
 	def Dmg(self,c):
 		x = weapon_info(self.weapon,Weapons)
@@ -153,7 +153,7 @@ class Player(object):
 			c = 1
 			print("That's a critical strike!!")
 		mod = ((self.stats['Strength']-10)/2)//1
-		x = roll + mod 
+		x = roll + mod + self.proficiency
 		return(int(x),c)
 	def Dmg(self,c):
 	#handles player dmg
@@ -266,20 +266,24 @@ def monster_iniative(Monster):
 
 	
 def intiative_order(monsters,player):
+# function that determins initative order
+# current problems: if two initatives are equal the resolution is not fair, it does not look at dex
+# solution: some fidling to make it fair may be agood way to do this however this resolves multiple equal initatives
 	keydict = {}
-	initative= []
 	for monster in monsters:
 		x = monster_iniative(monster)
-		keydict[x] = monster
-		initative.append(x)
+		keydict[monster] = x
 	p = player_iniative(player)
-	keydict[p] = player 
-	initative.append(p)
-	initative.sort()
-	initative.reverse()
+	keydict[player] = p
+	x = keydict.items()
+	info = []
+	for a in x:
+		info.append((a[1],a[0]))
+	info.sort()
+	info.reverse()
 	order = []
-	for i in initative:
-		order.append(keydict[i])
+	for i in info:
+		order.append(i[1])
 	return(order)
 
 def weapon_assignment(Weapons,choice):
@@ -454,6 +458,7 @@ print('Welcome to a world of magic and Adventure! Befor we jump in there are few
 char = Player()
 char.name = input('I require only your name! The rest is up to you! ')
 char.level = 1
+char.proficiency = 2
 char.player_class = player_class()
 char.starting_gold()
 char.hitdice = hitdice(char.player_class)
@@ -481,6 +486,7 @@ clearing.monsters.int = monster_info[3]
 clearing.monsters.wis = monster_info[4]
 clearing.monsters.cha = monster_info[5]
 clearing.monsters.AC = monster_info[8]
+clearing.monsters.proficiency = monster_info[9]
 clearing.monsters.Stats()
 clearing.monsters.health = monster_info[6]
 clearing.monsters.state = 'alive'
