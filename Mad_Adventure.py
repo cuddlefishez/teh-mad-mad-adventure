@@ -493,7 +493,7 @@ clearing.monsters.state = 'alive'
 if monster_info[10] == 1:
 	clearing.monsters.weapon = weapon_assignment(Weapons,['simple'])
 else:
-	input("There is a Dragon Nigger you dead")
+	input("There is a Dragon you dead")
 	
 
 clearing.actions = ['Roll Perception','']
