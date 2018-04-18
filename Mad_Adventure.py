@@ -19,6 +19,7 @@ someone will have to create tables for encounters so we have custom ones for eve
 table_dict = {'plains':3}
 keyed_dict = {3: [{ 1:'Goblin'},{2:'Hobgoblin'},{3:'Ancient Black Dragon'}]}
 
+
 # this class creates combat instances, not sure if I still want it to be this way, however it may be the best way to add story combats 
 class Combat(object):
 	def __init__(self):
@@ -137,6 +138,8 @@ class Player(object):
 		self.initiative = None
 		self.state = None
 		self.proficiency = None
+		self.spell_slots = None
+		self.spells = None
 	def Access_Inv(self):
 		print(self.inventory)
 		input("Is there something you would like to grab?")
@@ -380,6 +383,32 @@ def player_class():
 		else:
 			print('Your input is invalid, please try again!')
 	return(player_class)
+# creating a spell assignment dictionary similar to weapon assignment
+# three main components of spell name, dmg, dmg_type, additional
+spell_choice = {0:[{0:['Fire Bolt','1d10', 'm_fire',None]}],1:[{0:['Firebolt', '1d10', 'm_fire',None]}],2:[{0:['Eldritch Blast', '1d10', 'm_force',None]}]}
+
+def spell_pick(a, spell_choice):
+# a is the index which points to the class spell list 
+	j = 1
+	while j == 1:
+		s = input("Please choose a spell from the following list "+spell_choice[a][0][0][0]+" ")
+		if string.capwords(s) in spell_choice[a][0][0]:
+			spell = spell_choice[a][0][0]
+			return(spell)
+			j = 0
+		else: 
+			print("There is no such spell, please try again ")
+		
+def class_customize(Player,spell_choice):
+	k = Player.player_class
+	spell_cast = ['Wizard','Sorcerer','Warlock','Druid','Cleric','Paladin','Bard','Ranger']
+	if k in spell_cast:
+		m = spell_cast.index(k)
+		spell = spell_pick(m,spell_choice)
+		Player.spells = [spell]
+		return(Player.spells)
+	else:
+		print("Your class has no additional setup!")
 def hitdice(player_class):
 #hit dice values for each class 
 	hitdice = ''
@@ -465,6 +494,7 @@ def character_create():
 	char.starting_gold()
 	char.hitdice = hitdice(char.player_class)
 	char.stats = Stat_Assignment()
+	char.spells = class_customize(char,spell_choice)
 	char.weapon = weapon_assignment(Weapons,['simple'])
 	print(char.weapon)
 	char.inventory = ['Rations5','Bedroll','Firestarter']
@@ -472,7 +502,3 @@ def character_create():
 	char.AC = 10 + ((char.stats['Dexterity']-10)/2)//1
 	char.state = 'alive'
 	return(char)
-
-	
-	
-	
