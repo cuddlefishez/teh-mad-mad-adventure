@@ -1,6 +1,6 @@
 import random
 import string
-import tkinter
+from tkinter import *
 # the class below is the room code meant for creating rooms in dungeons and open world for the player to interact 
 class Room(object):
 	def __init__(self):
@@ -485,7 +485,7 @@ def monster_check(monster,stat):
 	check = x + mod 
 	return(int(check))
 def character_create():
-	print('Welcome to a world of magic and Adventure! Befor we jump in there are few things that you must answer me!')
+	d1 = Message('Welcome to a world of magic and Adventure! Before we jump in there are few things that you must answer me!')
 	char = Player()
 	char.name = input('I require only your name! The rest is up to you! ')
 	char.level = 1
